@@ -1,7 +1,7 @@
-#define BLYNK_TEMPLATE_ID "TMPL6pd4vXGo2"
-#define BLYNK_TEMPLATE_NAME "Project"
+#define BLYNK_TEMPLATE_ID "TMPL6N48AugjW"
+#define BLYNK_TEMPLATE_NAME "Teeiihaiturtangjai"
 #define BLYNK_DEVICE_NAME "ESP32"
-#define BLYNK_AUTH_TOKEN "0tDfs160rGyp6Yu7N_yAPL2yVq_se5-l"
+#define BLYNK_AUTH_TOKEN "qr__xOLsc6w98AaKNetr94gvXAek0Eac"
 
 #include <WiFi.h>
 #include <BlynkSimpleEsp32.h>
@@ -189,7 +189,7 @@ void checkMotion() {
     
     if (motion == HIGH) {
       if (lastMotion == LOW) { // Motion detected, change pirState if it was LOW
-        Serial.println("Motion detected!");
+//        Serial.println("Motion detected!");
         if (pinValue == 1){
           // do something when button is pressed;
           digitalWrite(buzzerPin, LOW); // Turn on buzzer (active low)
@@ -202,7 +202,7 @@ void checkMotion() {
       }
     } else {
       if (lastMotion == HIGH) { // Motion ended, change pirState if it was HIGH
-        Serial.println("Motion ended!");
+//        Serial.println("Motion ended!");
         lastMotion = LOW; // Update state to indicate motion ended
       }
     }
@@ -211,7 +211,7 @@ void checkMotion() {
 
 void turnOffBuzzer() {
   digitalWrite(buzzerPin, HIGH); // Turn off buzzer
-  Serial.println("Buzzer turned off.");
+//  Serial.println("Buzzer turned off.");
 }
 
 String interpretAirQuality(int sensor_value) {
