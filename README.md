@@ -5,3 +5,4 @@ Presentation : https://www.canva.com/design/DAGYBM9QzaM/A_4y1TeDnucWHT-tzhGztA/e
 
 ![Alt text](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjjzcfS3eNvxDaxDmbzcoN_QDvaLrQsq23Xg&s)
 
+model : https://pjreddie.com/darknet/yolo/
