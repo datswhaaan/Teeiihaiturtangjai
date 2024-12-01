@@ -14,11 +14,11 @@ firebase_admin.initialize_app(cred, {
 })
 
 url = 'https://firebasestorage.googleapis.com/v0/b/teeii-hai-tur-tang-jai.firebasestorage.app/o/datastream_image.jpg?alt=media&token=b69e40fb-5141-4708-b8b5-4bec6cd62464'
-BLYNK_AUTH_TOKEN = "0tDfs160rGyp6Yu7N_yAPL2yVq_se5-l"  # Replace with your Blynk token
-BLYNK_URL = f"https://sgp1.blynk.cloud/external/api/update?token=0tDfs160rGyp6Yu7N_yAPL2yVq_se5-l"
+BLYNK_AUTH_TOKEN = "qr__xOLsc6w98AaKNetr94gvXAek0Eac"  # Replace with your Blynk token
+BLYNK_URL = f"https://sgp1.blynk.cloud/external/api/update?token=qr__xOLsc6w98AaKNetr94gvXAek0Eac"
 
 current_state = False
-cap = cv2.VideoCapture(url)
+
 whT=320
 confThreshold = 0.5
 nmsThreshold = 0.3
@@ -41,7 +41,7 @@ def upload_image_to_firebase(image, folder_name, file_name):
 
     # Upload the image to Firebase Storage
     bucket = storage.bucket()
-    blob = bucket.blob(f"{folder_name}/{file_name}")
+    blob = bucket.blob(f"{folder_name}{file_name}")
     blob.upload_from_filename(temp_filename)
     blob.make_public()  # Optional: make the file publicly accessible
 
@@ -85,16 +85,19 @@ def findObject(outputs,im):
     if found_person:
         if current_state == False:
             current_state = True
-            response = requests.get(BLYNK_URL + "&V9=มีคน5555")
+            response = requests.get(BLYNK_URL + "&V9=1")
+            upload_image_to_firebase(im, "", "people_detected.jpg")
             print("blynk to มีคน")
+            # Send the image URL to Blynk
+            
         current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         file_name = f"{current_time}.jpg"
-        upload_image_to_firebase(im_original, "human_detected_1", file_name)
-        upload_image_to_firebase(im, "human_detected_2", file_name)
+        upload_image_to_firebase(im_original, "human_detected_1/", file_name)
+        upload_image_to_firebase(im, "human_detected_2/", file_name)
     else:
         if current_state == True:
             current_state = False
-            response = requests.get(BLYNK_URL + "&V9=ไม่มีคน")
+            response = requests.get(BLYNK_URL + "&V9=0")
             print("blynk to ไม่มีคน")
     
  
@@ -103,7 +106,7 @@ while True:
     img_resp=urllib.request.urlopen(url)
     imgnp=np.array(bytearray(img_resp.read()),dtype=np.uint8)
     im = cv2.imdecode(imgnp,-1)
-    sucess, img= cap.read()
+
     blob=cv2.dnn.blobFromImage(im,1/255,(whT,whT),[0,0,0],1,crop=False)
     net.setInput(blob)
     layernames=net.getLayerNames()
