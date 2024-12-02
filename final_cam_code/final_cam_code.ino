@@ -1,12 +1,6 @@
-// #define BLYNK_TEMPLATE_ID "TMPL6pd4vXGo2"
-// #define BLYNK_TEMPLATE_NAME "Project"
-// #define BLYNK_DEVICE_NAME "ESP32"
-// #define BLYNK_AUTH_TOKEN "0tDfs160rGyp6Yu7N_yAPL2yVq_se5-l"
-
 #include "Arduino.h"
 #include "esp_camera.h"
 #include <WiFi.h>
-// #include <BlynkSimpleEsp32.h>
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include "driver/rtc_io.h"
@@ -19,11 +13,9 @@
 Scheduler runner;
 
 void streamVideo();
-// void captureImage();
 void imageForAi();
 
 Task taskStreamVideo(1, TASK_FOREVER, &streamVideo);
-// Task taskCaptureImage(500, TASK_FOREVER, &captureImage);
 Task taskImageForAi(1000, TASK_FOREVER, &imageForAi);
 
 #define SPIFFS LITTLEFS
@@ -77,25 +69,6 @@ String index_html = "<meta charset=\"utf-8\"/>\n" \
 
 const char* ssid = "whanwhan";
 const char* password = "whanwhanjubjub";
-// const char* auth = BLYNK_AUTH_TOKEN;
-
-// #define SWITCH_PIN V5
-// #define DETECTED_PIN V9
-
-// int switchValue = 0;
-// String detectedString = "";
-
-// BLYNK_WRITE(SWITCH_PIN) {
-//   switchValue = param.asInt();
-//   Serial.print("V5 value is: ");
-//   Serial.println(switchValue);
-// }
-
-// BLYNK_WRITE(DETECTED_PIN) {
-//   detectedString = param.asStr();
-//   Serial.print("V9 value is: ");
-//   Serial.println(detectedString);
-// }
 
 // Firebase Configuration
 #define DATABASE_URL "https://teeii-hai-tur-tang-jai-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -202,7 +175,6 @@ void configCamera(){
   config.xclk_freq_hz = 20000000;
   config.frame_size = FRAMESIZE_QVGA;
   config.pixel_format = PIXFORMAT_JPEG;
-  // config.grab_mode = CAMERA_GRAB_LATEST;
   config.jpeg_quality = 10;
   config.fb_count = 1;
  
@@ -213,13 +185,6 @@ void configCamera(){
   }
   Serial.println("Camera initialized successfully!");
 }
-
-// void initBlynk() {
-//   Blynk.begin(auth, ssid, password);
-//   if(Blynk.connected()) {
-//     Serial.println("Blynk connected!");
-//   }
-// }
 
 // Firebase Initialization
 void initFirebase() {
@@ -263,32 +228,6 @@ void fcsUploadCallback(FCS_UploadStatusInfo info){
     }
 }
 
-// Function to get the current date and timestamp as a String
-// String getCurrentDateTime() {
-//     time_t now = time(0);
-//     struct tm tstruct;
-//     char buf[80];
-//     tstruct = *localtime(&now);
-//     strftime(buf, sizeof(buf), "%Y%m%d_%H%M%S", &tstruct);
-//     return String(buf);
-// }
-
-// void uploadToFirebase() {
-//     if (Firebase.ready()){
-//         Serial.print("Uploading picture... ");
-//         String path = String(BUCKET_PHOTO) + "/image_" + getCurrentDateTime() + ".jpg";
-
-//         //MIME type should be valid to avoid the download problem.
-//         //The file systems for flash and SD/SDMMC can be changed in FirebaseFS.h.
-//         if (Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID /* Firebase Storage bucket id */, FILE_PHOTO_PATH /* path to local file */, mem_storage_type_flash /* memory storage type, mem_storage_type_flash and mem_storage_type_sd */, path.c_str() /* path of remote file stored in the bucket */, "image/jpeg" /* mime type */,fcsUploadCallback)){
-//           Serial.printf("\nDownload URL: %s\n", fbdo.downloadURL().c_str());
-//         }
-//         else{
-//           Serial.println(fbdo.errorReason());
-//         }
-//     }
-// }
-
 void streamToFirebase() {
     if (Firebase.ready()){
         Serial.print("Uploading picture... ");
@@ -327,7 +266,6 @@ void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
 
   initWiFi();
-  // initBlynk();
   initLittleFS();
   configCamera();
   initFirebase();
@@ -337,11 +275,9 @@ void setup() {
   server.begin();
 
   runner.addTask(taskStreamVideo);
-  // runner.addTask(taskCaptureImage);
   runner.addTask(taskImageForAi);
 
   taskStreamVideo.enable();
-  // taskCaptureImage.enable();
   taskImageForAi.enable();
 }
     
@@ -398,22 +334,6 @@ void streamVideo() {
   }
 }
 
-// void captureImage() {
-//   // if (switchValue == 1 && detectedString == "Detected") {
-//   //   Serial.println("CAPTURE");
-//   //   capturePhotoSaveLittleFS();
-//   //   uploadToFirebase();
-//   // }
-//   if (Serial.available()) {
-//       String command = Serial.readStringUntil('\n');
-//       if (command == "c") {
-//           Serial.println("CAPTURE");
-//           capturePhotoSaveLittleFS();
-//           uploadToFirebase();
-//       }
-//   }
-// }
-
 void imageForAi() {
   capturePhotoSaveLittleFS();
   streamToFirebase();
@@ -421,5 +341,4 @@ void imageForAi() {
  
 void loop() {
   runner.execute();  // Run the scheduler
-  // Blynk.run();       // Keep Blynk running
 }
